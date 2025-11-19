@@ -20,7 +20,11 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
   const menuItems = {
     admin: [
       { name: "Dashboard", path: "/admin-dashboard", icon: <Home size={20} /> },
-      { name: "Manage Users", path: "/admin/users", icon: <Users size={20} /> },
+      {
+        name: "Assign Supervisors",
+        path: "assign-supervisors",
+        icon: <Users size={20} />,
+      },
       {
         name: "All Projects",
         path: "/admin/projects",

@@ -134,7 +134,6 @@ const StudentForm: React.FC = () => {
     try {
       console.log("Submitting:", data);
 
-    
       const payload = {
         full_name: data.fullName,
         email: data.email,

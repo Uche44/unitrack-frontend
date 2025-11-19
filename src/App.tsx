@@ -5,10 +5,11 @@ import StudentForm from "./pages/studentform";
 import SupervisorForm from "./pages/supervisorform";
 import LoginForm from "./pages/login";
 import AdminDashboardLayout from "./dashboard-layout/admin-layout";
-import Admin from "./pages/dashboard/admin";
-import Students from "./pages/dashboard/students";
-import Supervisor from "./pages/dashboard/supervisor";
+import Admin from "./pages/dashboard/admin/admin";
+import Students from "./pages/dashboard/student/students";
+import Supervisor from "./pages/dashboard/supervisor/supervisor";
 import SupervisorDashboardLayout from "./dashboard-layout/supervisor-layout";
+import AssignSupervisor from "./pages/dashboard/admin/assign-supervisor";
 
 // import NotFound from "./components/NotFound";
 // import { Toaster } from "./components/ui/sonner";
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Admin />,
+      },
+      {
+        path: "assign-supervisors",
+        element: <AssignSupervisor />,
       },
     ],
   },

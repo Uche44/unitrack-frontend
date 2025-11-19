@@ -2,14 +2,16 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { GraduationCap } from "lucide-react";
 import Sidebar from "../components/sidebar";
+import { useUserStore } from "../context/user-context";
 
 const AdminDashboardLayout: React.FC = () => {
-  const role = localStorage.getItem("userRole");
+ 
+  const user = useUserStore((state) => state.user);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <Sidebar role={role as any} />
+      <Sidebar role={user?.role as any} />
 
       {/* Main content */}
       <main className="flex-1 p-8 w-full min-h-screen ">
@@ -35,14 +37,18 @@ const AdminDashboardLayout: React.FC = () => {
           </div>
 
           {/* profile */}
-          <button className="rounded-full h-14 w-14 grid place-content-center mr-4 border border-gray-900">
-            SA
+          <button className="rounded-full bg-green-700 text-white font-bold text-xl h-14 w-14 grid place-content-center mr-4 ">
+            {user?.fullname
+              ?.trim()
+              .split(/\s+/)
+              .map((w) => w[0] || "")
+              .join("")
+              .slice(0, 2)
+              .toUpperCase() || ""}
           </button>
         </header>
 
-      
-
-        {/* Render child pages */}
+        
         <Outlet />
       </main>
     </div>

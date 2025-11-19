@@ -6,6 +6,7 @@ import * as z from "zod";
 import { Mail, Lock, ArrowRight, Info, CheckCircle } from "lucide-react";
 import api from "../lib/api";
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../context/user-context";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address."),
@@ -115,7 +116,8 @@ const LoginForm: React.FC = () => {
   });
 
   const navigate = useNavigate();
-  const [role, setRole] = React.useState<string | null>(null);
+
+  const setUser = useUserStore((state) => state.setUser);
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
@@ -133,18 +135,34 @@ const LoginForm: React.FC = () => {
 
         const userRole = res.data.user?.role;
 
-        // Save role in state
-        setRole(userRole);
-
         // Also save in localStorage so it's persistent
         localStorage.setItem("userRole", userRole);
 
         // Navigate based on role
         if (userRole === "admin") {
+          setUser({
+            fullname: res.data.user?.full_name,
+            email: res.data.user?.email,
+            role: userRole,
+            staffId: res.data.user?.staff_id,
+          });
           navigate("/admin-dashboard");
         } else if (userRole === "supervisor") {
+          setUser({
+            fullname: res.data.user?.full_name,
+            email: res.data.user?.email,
+            role: userRole,
+            staffId: res.data.user?.staff_id,
+          });
           navigate("/supervisor-dashboard");
         } else if (userRole === "student") {
+          setUser({
+            fullname: res.data.user?.full_name,
+            email: res.data.user?.email,
+            role: userRole,
+            matricNo: res.data.user?.matric_no,
+          });
+
           navigate("/student-dashboard");
         } else {
           alert("Unknown role. Please contact support.");
