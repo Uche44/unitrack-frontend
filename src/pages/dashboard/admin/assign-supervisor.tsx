@@ -1,19 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api";
-
-interface Student {
-  id: number;
-  fullname: string;
-  email: string;
-  matricNo?: string;
-}
-
-interface Supervisor {
-  id: number;
-  fullname: string;
-  email: string;
-  staffId?: string;
-}
+import type { Student, Supervisor } from "../../../types/user";
 
 const AssignSupervisor: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
@@ -23,6 +10,12 @@ const AssignSupervisor: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [chosenSupervisor, setChosenSupervisor] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [assignedSupervisorName, setAssignedSupervisorName] = useState<
+    string | null
+  >(null);
+  const [assignedCount, setAssignedCount] = useState<number>(0);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -69,6 +62,18 @@ const AssignSupervisor: React.FC = () => {
         supervisor_id: chosenSupervisor,
         student_ids: selected,
       });
+
+      const supervisor = supervisors.find((sup) => sup.id === chosenSupervisor);
+
+      // save success info
+      setAssignedSupervisorName(supervisor?.full_name || "Supervisor");
+      setAssignedCount(selected.length);
+      setSuccessMessage(
+        `${supervisor?.full_name} has been assigned to ${
+          selected.length
+        } student${selected.length > 1 ? "s" : ""}.`
+      );
+      setSuccessModalOpen(true);
 
       // remove assigned students and supervisor from lists
       setStudents((prev) => prev.filter((s) => !selected.includes(s.id)));
@@ -240,6 +245,32 @@ const AssignSupervisor: React.FC = () => {
                 className="px-4 py-2 rounded bg-green-600 text-white disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loading ? "Assigning..." : "Assign"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* success modal */}
+
+      {/* Success Modal */}
+      {successModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black opacity-30"
+            onClick={() => setSuccessModalOpen(false)}
+          />
+          <div className="relative bg-white rounded-lg shadow-lg w-full max-w-md p-6">
+            <h2 className="text-lg font-medium text-green-700 mb-4">
+              Supervisor Assigned Successfully!
+            </h2>
+            <p className="text-gray-700">{successMessage}</p>
+            <div className="flex justify-end mt-6">
+              <button
+                onClick={() => setSuccessModalOpen(false)}
+                className="px-4 py-2 rounded bg-green-600 text-white"
+              >
+                Close
               </button>
             </div>
           </div>

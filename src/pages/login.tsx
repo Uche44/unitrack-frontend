@@ -141,6 +141,7 @@ const LoginForm: React.FC = () => {
         // Navigate based on role
         if (userRole === "admin") {
           setUser({
+            id: res.data.user?.id,
             fullname: res.data.user?.full_name,
             email: res.data.user?.email,
             role: userRole,
@@ -149,6 +150,7 @@ const LoginForm: React.FC = () => {
           navigate("/admin-dashboard");
         } else if (userRole === "supervisor") {
           setUser({
+            id: res.data.user?.id,
             fullname: res.data.user?.full_name,
             email: res.data.user?.email,
             role: userRole,
@@ -157,6 +159,7 @@ const LoginForm: React.FC = () => {
           navigate("/supervisor-dashboard");
         } else if (userRole === "student") {
           setUser({
+            id: res.data.user?.id,
             fullname: res.data.user?.full_name,
             email: res.data.user?.email,
             role: userRole,

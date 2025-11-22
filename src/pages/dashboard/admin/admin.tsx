@@ -1,6 +1,8 @@
 import Overview from "../../../components/overview";
 import PendingSupervisorsList from "../../../components/supervisor-list";
 import ApprovedSupervisorsList from "../../../components/approved-supervisors";
+import AssignedStudentsList from "../../../components/assigned-students";
+
 import { Users, GraduationCap, FolderKanban } from "lucide-react";
 const Admin: React.FC = () => {
   const overviewData = [
@@ -37,6 +39,7 @@ const Admin: React.FC = () => {
       <Overview data={overviewData} />
       <PendingSupervisorsList />
       <ApprovedSupervisorsList />
+      <AssignedStudentsList />
     </section>
   );
 };
