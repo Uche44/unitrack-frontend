@@ -55,7 +55,7 @@ const Testimonials: React.FC = () => {
           What Our Users Say
         </motion.h2>
 
-        {/* Testimonials Grid */}
+       
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {testimonials.map((t, i) => (
             <motion.div

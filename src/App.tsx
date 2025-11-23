@@ -15,7 +15,7 @@ import AssignSupervisor from "./pages/dashboard/admin/assign-supervisor";
 // import { Toaster } from "./components/ui/sonner";
 
 const router = createBrowserRouter([
-  // 🔹 Public Routes
+  
   {
     path: "/",
     element: <Home />,
@@ -73,26 +73,7 @@ const router = createBrowserRouter([
     element: <Students />,
   },
 
-  // 🔹 Example Protected (Admin/User) Routes
-  // {
-  //   path: "/dashboard",
-  //   element: (
-  //     <ProtectedRoutes>
-  //       <Dashboard />
-  //     </ProtectedRoutes>
-  //   ),
-  //   children: [
-  //     { index: true, element: <DashboardIndex /> },
-  //     { path: "register-class", element: <RegisterClass /> },
-  //     { path: "lesson/:id", element: <LessonPage /> },
-  //   ],
-  // },
 
-  // 🔹 Example Auth Route
-  // { path: "/register", element: <Register /> },
-
-  // 🔹 Fallback 404
-  // { path: "*", element: <NotFound /> },
 ]);
 
 const App: React.FC = () => {

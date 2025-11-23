@@ -113,7 +113,7 @@ const FormField: React.FC<FormFieldProps> = ({
   );
 };
 
-// ✅ 3. Main Form Component
+// Form Component
 const StudentForm: React.FC = () => {
   const role = "student";
 
@@ -143,9 +143,7 @@ const StudentForm: React.FC = () => {
         password: data.password,
       };
 
-      // const res = await api.post("/api/signup/", payload, {
-      //   withCredentials: true,
-      // });
+  
       const res = await api.post("/api/signup/", payload);
 
       if (res.status === 201) {

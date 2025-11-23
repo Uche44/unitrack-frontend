@@ -1,14 +1,8 @@
 import { useEffect, useState } from "react";
 import { Mail, IdCard, User, CircleCheck, UserX } from "lucide-react";
-
+import type { Supervisor } from "../types/user";
 import api from "../lib/api";
 
-interface Supervisor {
-  id: string;
-  fullName: string;
-  email: string;
-  staffId: string;
-}
 
 const PendingSupervisorsList = () => {
   const [pendingSupervisors, setPendingSupervisors] = useState<Supervisor[]>(
@@ -16,7 +10,7 @@ const PendingSupervisorsList = () => {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [approving, setApproving] = useState<string | null>(null); // track currently approving supervisor
+  const [approving, setApproving] = useState<string | null>(null); 
 
   useEffect(() => {
     const fetchSupervisors = async () => {
@@ -50,7 +44,7 @@ const PendingSupervisorsList = () => {
         }
       );
       if (res.status === 200) {
-        // remove approved supervisor from the list
+        // remove approved supervisor
         setPendingSupervisors((prev) => prev.filter((sup) => sup.id !== id));
       } else {
         throw new Error("Approval failed");
@@ -72,7 +66,7 @@ const PendingSupervisorsList = () => {
 
   if (error) return <div className="p-4 text-center text-red-500">{error}</div>;
 
-  // Empty state
+  
   if (!loading && pendingSupervisors.length === 0) {
     return (
       <div className="w-full mt-10 flex flex-col items-center text-center text-gray-600 ">

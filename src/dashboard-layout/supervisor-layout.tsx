@@ -14,14 +14,14 @@ const SupervisorDashboardLayout: React.FC = () => {
 
       {/* Main content */}
       <main className="flex-1 p-8 w-full min-h-screen ">
-        {/* header */}
+      
         <header
           className="fixed top-0 left-0 w-full z-50 transition-all duration-500 
           bg-white/90 backdrop-blur-md shadow-md flex justify-between items-center
             "
         >
           <div className="max-w-7xl flex items-center justify-between py-4 px-6">
-            {/* Logo */}
+         
             <a
               href="#"
               className="flex items-center gap-2"

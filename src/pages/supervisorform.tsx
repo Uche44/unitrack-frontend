@@ -8,7 +8,6 @@ import {
   Mail,
   Lock,
   GraduationCap,
-  //   Hash,
   ArrowRight,
   Info,
   CheckCircle,
@@ -187,15 +186,7 @@ const SupervisorForm: React.FC = () => {
           <p className="text-gray-500">
             Register as a Supervisor to oversee and manage projects.
           </p>
-          {/* <div className="mt-6 flex justify-center">
-          
-            <button
-              className="px-6 py-2 border-b-4 border-green-600 text-green-700 font-semibold text-lg transition duration-150 ease-in-out"
-              disabled
-            >
-              Supervisor
-            </button>
-          </div> */}
+         
         </header>
 
         {/* Success message */}
@@ -216,7 +207,7 @@ const SupervisorForm: React.FC = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-4"
         >
-          {/* Full Name */}
+        
           <FormField
             label="Full Name"
             name="fullName"
@@ -226,7 +217,7 @@ const SupervisorForm: React.FC = () => {
             error={errors}
           />
 
-          {/* Staff ID */}
+          
           <FormField
             label="Staff ID"
             name="staffId"
@@ -236,7 +227,7 @@ const SupervisorForm: React.FC = () => {
             error={errors}
           />
 
-          {/* Email */}
+     
           <FormField
             label="Email"
             name="email"
@@ -258,7 +249,7 @@ const SupervisorForm: React.FC = () => {
             error={errors}
           /> */}
 
-          {/* Password */}
+         
           <FormField
             label="Password"
             name="password"
@@ -269,7 +260,7 @@ const SupervisorForm: React.FC = () => {
             error={errors}
           />
 
-          {/* Department (Fixed) */}
+         
           <FormField
             label="Department"
             name="department"
@@ -281,14 +272,13 @@ const SupervisorForm: React.FC = () => {
             disabled
           />
 
-          {/* Role (Hidden/Fixed for validation) */}
+    
           <input
             type="hidden"
             {...register("role")}
             value={role}
           />
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -330,7 +320,7 @@ const SupervisorForm: React.FC = () => {
           </button>
         </form>
 
-        {/* Footer */}
+       
         <footer className="mt-8 text-center text-xs text-gray-500 leading-relaxed">
           Need an account for administration? Please contact{" "}
           <span className="text-green-600 font-medium">

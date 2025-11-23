@@ -135,8 +135,8 @@ const LoginForm: React.FC = () => {
 
         const userRole = res.data.user?.role;
 
-        // Also save in localStorage so it's persistent
-        localStorage.setItem("userRole", userRole);
+      
+        // localStorage.setItem("userRole", userRole);
 
         // Navigate based on role
         if (userRole === "admin") {
@@ -197,15 +197,7 @@ const LoginForm: React.FC = () => {
           <p className="text-gray-500">
             Start managing your school projects with ease.
           </p>
-          {/* <div className="mt-6 flex justify-center">
-          
-            <button
-              className="px-6 py-2 border-b-4 border-green-600 text-green-700 font-semibold text-lg transition duration-150 ease-in-out"
-              disabled
-            >
-              Supervisor
-            </button>
-          </div> */}
+         
         </header>
 
         {/* Success message */}

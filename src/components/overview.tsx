@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-// import { Users, GraduationCap, FolderKanban } from "lucide-react";l
+
 
 export interface OverviewItem {
   label: string;
   value: number;
-  icon: any; // lucide-react icons are components
+  icon: any; 
   bg: string;
   circleBg: string;
 }
@@ -48,7 +48,7 @@ const Overview = ({ data }: { data: OverviewItem[] }) => {
               dark:shadow-none dark:text-white
             `}
           >
-            {/* icon + number */}
+            
             <div className="flex items-center gap-3 mb-1">
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center ${item.circleBg}`}

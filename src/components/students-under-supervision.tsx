@@ -4,7 +4,7 @@ import api from "../lib/api";
 import type { Student } from "../types/user";
 
 interface Props {
-  supervisorId: number;
+  supervisorId: number | undefined;
 }
 
 const StudentsUnderSupervision: React.FC<Props> = ({ supervisorId }) => {

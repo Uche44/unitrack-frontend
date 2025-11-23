@@ -42,7 +42,7 @@ const Header: React.FC = () => {
           </span>
         </a>
 
-        {/* Desktop Navigation */}
+        {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <button
@@ -66,7 +66,7 @@ const Header: React.FC = () => {
           </button>
         </nav>
 
-        {/* Mobile Menu Toggle */}
+        {/* Mobile Toggle */}
         <button
           className={`md:hidden p-2 rounded-lg ${
             isScrolled ? "text-green-800" : "text-gray-900"
@@ -77,7 +77,7 @@ const Header: React.FC = () => {
         </button>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Nav */}
       {menuOpen && (
         <div className="md:hidden bg-white/95 backdrop-blur-md border-t border-green-200 shadow-lg">
           <nav className="flex flex-col items-center py-4 space-y-4">
@@ -104,7 +104,7 @@ const Header: React.FC = () => {
         </div>
       )}
 
-      {/* Mirror Reflection */}
+      {/* Mirror */}
       {isScrolled && (
         <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-green-600/60 via-white/40 to-green-600/60 transform scale-y-[-1] opacity-60"></div>
       )}
