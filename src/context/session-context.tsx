@@ -1,0 +1,70 @@
+import { create } from "zustand";
+import api from "../lib/api";
+
+export interface SessionData {
+  session: string;
+  duration: string;
+  start_date: string;
+  end_date: string;
+}
+
+interface SessionStore {
+  currentSession: SessionData | null;
+  setSession: (session: SessionData) => void;
+  clearSession: () => void;
+  fetchSession: () => Promise<void>;
+}
+
+export const useSessionStore = create<SessionStore>((set) => {
+  // fetch current session from backend and set into store
+  const fetchSession = async () => {
+    try {
+      const res = await api.get("/projects/session/");
+
+      if (res.status === 200) {
+        const data = res.data;
+        let sessionObj: unknown = null;
+
+        if (Array.isArray(data)) {
+          sessionObj = data.length ? data[0] : null;
+        } else if (data && typeof data === "object") {
+          sessionObj = data;
+        }
+
+        if (sessionObj && typeof sessionObj === "object") {
+          const obj = sessionObj as {
+            session?: string;
+            duration?: string;
+            start_date?: string;
+            end_date?: string;
+          };
+
+          if (obj.session || obj.session === "") {
+            set({
+              currentSession: {
+                session: obj.session || "",
+                duration: obj.duration ?? "",
+                start_date: obj.start_date ?? "",
+                end_date: obj.end_date ?? "",
+              },
+            });
+          }
+        }
+      }
+    } catch {
+      // fail silently for now — admin can still open modal to set session
+    }
+  };
+
+  const store = {
+    currentSession: null,
+    setSession: (session: SessionData) => set({ currentSession: session }),
+    clearSession: () => set({ currentSession: null }),
+    fetchSession,
+  };
+
+  // kick off initial fetch (no await)
+  void fetchSession();
+
+  return store;
+});

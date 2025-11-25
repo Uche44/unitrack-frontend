@@ -9,16 +9,17 @@ export interface User {
   matricNo?: string;
 }
 
-export interface Student {
-  id: number;
-  fullName: string;
-  email: string;
-  matricNo: string;
-}
-
 export interface Supervisor {
   id: number;
   fullname: string;
   email: string;
   staffId?: string;
+}
+
+export interface Student {
+  id: number;
+  fullName: string;
+  email: string;
+  matricNo: string;
+  supervisor?: Supervisor;
 }

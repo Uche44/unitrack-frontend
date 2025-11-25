@@ -4,7 +4,10 @@ import { persist } from "zustand/middleware";
 
 interface UserState {
   user: User | null;
+  is_guest: boolean;
+  guest_role: string | null;
   setUser: (user: User) => void;
+  setGuest: (is_guest: boolean, guest_role?: string) => void;
   clearUser: () => void;
 }
 
@@ -12,11 +15,15 @@ export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       user: null,
+      is_guest: false,
+      guest_role: null,
       setUser: (user) => set({ user }),
-      clearUser: () => set({ user: null }),
+      setGuest: (is_guest, guest_role = null) =>
+        set({ is_guest, guest_role: guest_role || null }),
+      clearUser: () => set({ user: null, is_guest: false, guest_role: null }),
     }),
     {
-      name: "user-storage", 
+      name: "user-storage",
     }
   )
 );

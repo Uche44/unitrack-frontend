@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-4 py-2 rounded-md transition 
+              className={`flex items-center gap-3 px-4 py-2 rounded-md outline-none transition 
                 ${
                   isActive
                     ? "bg-white text-green-700 font-semibold"

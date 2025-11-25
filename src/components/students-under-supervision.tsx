@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Ellipsis } from "lucide-react";
 import api from "../lib/api";
 import type { Student } from "../types/user";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   supervisorId: number | undefined;
@@ -12,6 +13,7 @@ const StudentsUnderSupervision: React.FC<Props> = ({ supervisorId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -107,7 +109,11 @@ const StudentsUnderSupervision: React.FC<Props> = ({ supervisorId }) => {
                   {menuOpen === student.id && (
                     <div className="absolute right-6 top-2 bg-white border shadow-md rounded-md w-40 z-20">
                       <button
-                        onClick={() => alert("View details (implement modal)")}
+                        onClick={() =>
+                          navigate(
+                            `/supervisor-dashboard/supervisors/${supervisorId}/students/${student.id}`
+                          )
+                        }
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                       >
                         View Details
@@ -160,11 +166,16 @@ const StudentsUnderSupervision: React.FC<Props> = ({ supervisorId }) => {
               {menuOpen === student.id && (
                 <div className="absolute right-0 top-10 bg-white border shadow-md rounded-md w-40 z-20">
                   <button
-                    onClick={() => alert("View details (implement modal)")}
+                    onClick={() =>
+                      navigate(
+                        `/supervisor-dashboard/supervisors/${supervisorId}/students/${student.id}`
+                      )
+                    }
                     className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                   >
                     View Details
                   </button>
+
                   <button
                     onClick={() => handleReject(student.id)}
                     className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50"

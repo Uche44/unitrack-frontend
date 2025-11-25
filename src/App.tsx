@@ -10,12 +10,13 @@ import Students from "./pages/dashboard/student/students";
 import Supervisor from "./pages/dashboard/supervisor/supervisor";
 import SupervisorDashboardLayout from "./dashboard-layout/supervisor-layout";
 import AssignSupervisor from "./pages/dashboard/admin/assign-supervisor";
+import StudentPage from "./pages/dashboard/supervisor/student-page";
+import StudentDashboardLayout from "./dashboard-layout/student-layout";
 
 // import NotFound from "./components/NotFound";
 // import { Toaster } from "./components/ui/sonner";
 
 const router = createBrowserRouter([
-  
   {
     path: "/",
     element: <Home />,
@@ -65,15 +66,31 @@ const router = createBrowserRouter([
         index: true,
         element: <Supervisor />,
       },
+      {
+        path: "supervisors/:supervisorId/students/:studentId",
+        element: <StudentPage />,
+      },
     ],
   },
 
   {
     path: "/student-dashboard",
-    element: <Students />,
+    element: (
+      // <ProtectedRoutes>
+      <StudentDashboardLayout />
+      // </ProtectedRoutes>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Students />,
+      },
+      // {
+      //   path: "assign-supervisors",
+      //   element: <AssignSupervisor />,
+      // },
+    ],
   },
-
-
 ]);
 
 const App: React.FC = () => {
