@@ -15,10 +15,10 @@ const AssignSupervisor: React.FC = () => {
   const [chosenSupervisor, setChosenSupervisor] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [assignedSupervisorName, setAssignedSupervisorName] = useState<
+  const [_assignedSupervisorName, setAssignedSupervisorName] = useState<
     string | null
   >(null);
-  const [assignedCount, setAssignedCount] = useState<number>(0);
+  const [_assignedCount, setAssignedCount] = useState<number>(0);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const { isGuest } = useGuestMode();
 
