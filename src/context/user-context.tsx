@@ -7,7 +7,7 @@ interface UserState {
   is_guest: boolean;
   guest_role: string | null;
   setUser: (user: User) => void;
-  setGuest: (is_guest: boolean, guest_role?: string) => void;
+  setGuest: (is_guest: boolean, guest_role?: string | null) => void;
   clearUser: () => void;
 }
 

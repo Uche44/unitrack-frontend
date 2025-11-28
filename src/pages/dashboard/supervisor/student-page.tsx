@@ -1,7 +1,18 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "../../../lib/api";
-import type { Student } from "../../../types/user";
+// import type { Student } from "../../../types/user";
+
+export interface StudentResponse {
+  id: number;
+  fullName: string;
+  email: string;
+  matricNo: string;
+  supervisor: {
+    id: number;
+    fullName: string;
+  };
+}
 
 const DetailRow = ({ label, value }: { label: string; value: string }) => (
   <span className="flex gap-2 w-full">
@@ -12,7 +23,7 @@ const DetailRow = ({ label, value }: { label: string; value: string }) => (
 
 const StudentPage = () => {
   const { supervisorId, studentId } = useParams();
-  const [student, setStudent] = useState<Student | null>(null);
+  const [student, setStudent] = useState<StudentResponse | null>(null);
 
   useEffect(() => {
     const loadStudent = async () => {

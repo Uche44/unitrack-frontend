@@ -1,27 +1,47 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Mail, IdCard, User, CircleCheck, UserX } from "lucide-react";
-
+import type { Supervisor } from "../types/user";
 import api from "../lib/api";
 
-import type { Student } from "../types/user";
+// import type { Student } from "../types/user";
+interface AssignedStudent {
+  id: string | number;
+  fullName: string;
+  email: string;
+  matricNo: string;
+  supervisor: Supervisor;
+}
 
 const AssignedStudentsList = () => {
-  const [assignedStudents, setAssignedStudents] = useState<Student[]>([]);
+  const [assignedStudents, setAssignedStudents] = useState<AssignedStudent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  //   const [approving, setApproving] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchSupervisors = async () => {
+    const fetchAssignedStudents = async () => {
       try {
         const res = await api.get("/api/assigned-students/");
-        if (res.status === 200) {
-          console.log("Assigned students fetched:", res.data);
-        } else {
+
+        if (res.status !== 200) {
           throw new Error("Failed to fetch supervisors");
         }
 
-        setAssignedStudents(res.data);
+        console.log("Assigned students fetched:", res.data);
+
+        const mapped = res.data.map((stu: any) => ({
+          id: stu.id,
+          fullName: stu.full_name,
+          email: stu.email,
+          matricNo: stu.matric_no,
+          supervisor: {
+            id: stu.supervisor.id,
+            fullName: stu.supervisor.full_name,
+            email: stu.supervisor.email,
+          },
+        }));
+
+        setAssignedStudents(mapped);
       } catch (err: any) {
         setError(err.message || "Something went wrong");
       } finally {
@@ -29,8 +49,9 @@ const AssignedStudentsList = () => {
       }
     };
 
-    fetchSupervisors();
+    fetchAssignedStudents();
   }, []);
+
 
   if (loading)
     return (
@@ -78,9 +99,9 @@ const AssignedStudentsList = () => {
                 key={sup.id}
                 className="border-b  border-gray-700 hover:bg-gray-200  transition"
               >
-                <td className="p-3">{sup.full_name}</td>
-                <td className="p-3">{sup.matric_no}</td>
-                <td className="p-3">{sup.supervisor.full_name}</td>
+                <td className="p-3">{sup.fullName}</td>
+                <td className="p-3">{sup.matricNo}</td>
+                <td className="p-3">{sup.supervisor.fullName}</td>
                 <td className="p-3">
                   <button
                     // onClick={() => handleApprove(sup.id)}

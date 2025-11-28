@@ -106,7 +106,7 @@ const Header: React.FC = () => {
 
       {/* Mirror */}
       {isScrolled && (
-        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-green-600/60 via-white/40 to-green-600/60 transform scale-y-[-1] opacity-60"></div>
+        <div className="absolute bottom-0 left-0 w-full h-[2px] bg-linear-to-r from-green-600/60 via-white/40 to-green-600/60 transform scale-y-[-1] opacity-60"></div>
       )}
     </header>
   );

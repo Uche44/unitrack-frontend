@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler } from "react-hook-form";
@@ -44,7 +45,7 @@ interface FormFieldProps {
   icon: React.ElementType;
   placeholder?: string;
   options?: string[];
-  register: ReturnType<typeof useForm>["register"];
+  register: ReturnType<typeof useForm<StudentFormInputs>>["register"];
   error?: string;
   disabled?: boolean;
 }

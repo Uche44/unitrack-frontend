@@ -16,7 +16,6 @@ interface SessionStore {
 }
 
 export const useSessionStore = create<SessionStore>((set) => {
-  // fetch current session from backend and set into store
   const fetchSession = async () => {
     try {
       const res = await api.get("/projects/session/");
@@ -51,8 +50,8 @@ export const useSessionStore = create<SessionStore>((set) => {
           }
         }
       }
-    } catch {
-      // fail silently for now — admin can still open modal to set session
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -63,7 +62,6 @@ export const useSessionStore = create<SessionStore>((set) => {
     fetchSession,
   };
 
-  // kick off initial fetch (no await)
   void fetchSession();
 
   return store;

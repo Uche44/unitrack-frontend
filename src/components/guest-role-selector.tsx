@@ -63,11 +63,20 @@ const GuestRoleSelector: React.FC<GuestRoleSelectorProps> = ({ onClose }) => {
         matric_no?: string | null;
       };
 
+      // Normalize role to the known guest roles so it matches the frontend User role type.
+      const allowedRoles = ["student", "supervisor", "admin"] as const;
+      type GuestRole = typeof allowedRoles[number];
+
+      const normalizedRole: GuestRole =
+        backendTyped && backendTyped.role && (allowedRoles as readonly string[]).includes(backendTyped.role)
+          ? (backendTyped.role as GuestRole)
+          : (selectedRole as GuestRole);
+
       const safeUser = {
         id: backendTyped?.id ?? 0,
         fullname: backendTyped?.full_name ?? `Guest ${selectedRole}`,
         email: backendTyped?.email ?? "",
-        role: backendTyped?.role ?? selectedRole,
+        role: normalizedRole,
         staffId: backendTyped?.staff_id ?? undefined,
         matricNo: backendTyped?.matric_no ?? undefined,
       };
@@ -127,7 +136,7 @@ const GuestRoleSelector: React.FC<GuestRoleSelectorProps> = ({ onClose }) => {
                   isSelected
                     ? role.color
                         .replace("hover:", "")
-                        .replace("border", "border-2 border")
+                        .replace("border", "border-2")
                     : role.color
                 }
               `}

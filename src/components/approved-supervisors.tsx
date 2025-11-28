@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Mail, IdCard, User, Ellipsis } from "lucide-react";
 import api from "../lib/api";
-
-interface Supervisor {
-  id: string;
-  fullName: string;
-  email: string;
-  staffId: string;
-}
+import type { Supervisor } from "../types/user";
+// interface Supervisor {
+//   id: string;
+//   fullName: string;
+//   email: string;
+//   staffId: string;
+// }
 
 const ApprovedSupervisorsList = () => {
   const [supervisors, setSupervisors] = useState<Supervisor[]>([]);
@@ -18,13 +19,19 @@ const ApprovedSupervisorsList = () => {
     const fetchSupervisors = async () => {
       try {
         const res = await api.get("/api/supervisors");
-        if (res.status === 200) {
-          console.log("Supervisors fetched:", res.data);
-        } else {
+
+        if (res.status !== 200) {
           throw new Error("Failed to fetch supervisors");
         }
 
-        setSupervisors(res.data);
+        const mapped = res.data.map((sup: any) => ({
+          id: sup.id,
+          fullName: sup.full_name,
+          email: sup.email,
+          staffId: sup.staff_id,
+        }));
+
+        setSupervisors(mapped);
       } catch (err: any) {
         setError(err.message || "Something went wrong");
       } finally {
@@ -67,9 +74,10 @@ const ApprovedSupervisorsList = () => {
                 key={sup.id}
                 className="border-b  border-gray-700 hover:bg-gray-200  transition"
               >
-                <td className="p-3">{sup.full_name}</td>
+                <td className="p-3">{sup.fullName}</td>
                 <td className="p-3">{sup.email}</td>
-                <td className="p-3">{sup.staff_id}</td>
+                <td className="p-3">{sup.staffId}</td>
+
                 <td className="p-3">
                   <button className="cursor-pointer">
                     <Ellipsis size={16} />

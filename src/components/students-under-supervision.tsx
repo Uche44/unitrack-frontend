@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Ellipsis } from "lucide-react";
 import api from "../lib/api";
@@ -15,21 +16,31 @@ const StudentsUnderSupervision: React.FC<Props> = ({ supervisorId }) => {
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        setLoading(true);
-        const res = await api.get(`/api/supervisors/${supervisorId}/students/`);
-        setStudents(res.data);
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch students");
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  const fetchStudents = async () => {
+    try {
+      setLoading(true);
 
-    fetchStudents();
-  }, [supervisorId]);
+      const res = await api.get(`/api/supervisors/${supervisorId}/students/`);
+
+      const mapped = res.data.map((stu: any) => ({
+        id: stu.id,
+        fullName: stu.full_name,
+        email: stu.email,
+        matricNo: stu.matric_no,
+      }));
+
+      setStudents(mapped);
+    } catch (err: any) {
+      setError(err.message || "Failed to fetch students");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchStudents();
+}, [supervisorId]);
+
 
   const handleReject = async (studentId: number) => {
     if (!confirm("Are you sure you want to reject this student?")) return;
@@ -89,9 +100,10 @@ const StudentsUnderSupervision: React.FC<Props> = ({ supervisorId }) => {
                 key={student.id}
                 className="border-b border-gray-300 hover:bg-green-50 transition"
               >
-                <td className="p-3">{student.full_name}</td>
+                <td className="p-3">{student.fullName}</td>
                 <td className="p-3">{student.email}</td>
-                <td className="p-3">{student.matric_no}</td>
+                <td className="p-3">{student.matricNo}</td>
+
                 <td className="p-3 relative">
                   {/* Ellipsis menu */}
                   <button
@@ -142,12 +154,12 @@ const StudentsUnderSupervision: React.FC<Props> = ({ supervisorId }) => {
             className="bg-white shadow p-4 rounded-lg"
           >
             <h4 className="font-semibold text-gray-900 text-lg">
-              {student.full_name}
+              {student.fullName}
             </h4>
 
             <p className="text-gray-700 text-sm mt-1">{student.email}</p>
             <p className="text-gray-700 text-sm mt-1">
-              Matric No: {student.matric_no}
+              Matric No: {student.matricNo}
             </p>
 
             <div className="flex justify-end mt-2 relative">

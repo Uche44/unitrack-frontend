@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { useForm } from "react-hook-form";
-import type { SubmitHandler, FieldErrors } from "react-hook-form";
+import type { SubmitHandler, FieldErrors, Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Mail, Lock, ArrowRight, Info, CheckCircle } from "lucide-react";
@@ -23,8 +24,8 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 interface FormFieldProps {
   label: string;
 
-  name: keyof LoginFormInputs;
-  type?: "email" | "password";
+  name: Path<LoginFormInputs>;
+  type?: "email" | "password" | "text" | "select";
   icon: React.ElementType;
   placeholder?: string;
   options?: string[];
@@ -53,7 +54,7 @@ const FormField: React.FC<FormFieldProps> = ({
   return (
     <div className="mb-5">
       <label
-        htmlFor={name as string}
+        htmlFor={name}
         className="block text-sm font-semibold text-gray-700 mb-1"
       >
         {label}
@@ -63,8 +64,8 @@ const FormField: React.FC<FormFieldProps> = ({
 
         {isSelect ? (
           <select
-            id={name as string}
-            {...register(name as string)}
+            id={name}
+            {...register(name)}
             disabled={disabled}
             className={`
               w-full pl-10 pr-4 py-2 border rounded-lg bg-white text-gray-800 shadow-sm transition-all
@@ -84,10 +85,10 @@ const FormField: React.FC<FormFieldProps> = ({
           </select>
         ) : (
           <input
-            id={name as string}
+            id={name}
             type={type}
             placeholder={placeholder}
-            {...register(name as string)}
+            {...register(name)}
             disabled={disabled}
             className={`
               w-full pl-10 pr-4 py-2 border rounded-lg bg-white text-gray-800 shadow-sm transition-all

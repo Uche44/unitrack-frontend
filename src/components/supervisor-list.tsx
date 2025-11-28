@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Mail, IdCard, User, CircleCheck, UserX } from "lucide-react";
 import type { Supervisor } from "../types/user";
 import api from "../lib/api";
-
+import { camelize } from "../types/camelize";
 
 const PendingSupervisorsList = () => {
   const [pendingSupervisors, setPendingSupervisors] = useState<Supervisor[]>(
@@ -10,7 +11,7 @@ const PendingSupervisorsList = () => {
   );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [approving, setApproving] = useState<string | null>(null); 
+  const [approving, setApproving] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSupervisors = async () => {
@@ -22,7 +23,7 @@ const PendingSupervisorsList = () => {
           throw new Error("Failed to fetch supervisors");
         }
 
-        setPendingSupervisors(res.data);
+        setPendingSupervisors(camelize(res.data));
       } catch (err: any) {
         setError(err.message || "Something went wrong");
       } finally {
@@ -45,7 +46,9 @@ const PendingSupervisorsList = () => {
       );
       if (res.status === 200) {
         // remove approved supervisor
-        setPendingSupervisors((prev) => prev.filter((sup) => sup.id !== id));
+        setPendingSupervisors((prev) =>
+          prev.filter((sup) => sup.id !== parseInt(id))
+        );
       } else {
         throw new Error("Approval failed");
       }
@@ -66,7 +69,6 @@ const PendingSupervisorsList = () => {
 
   if (error) return <div className="p-4 text-center text-red-500">{error}</div>;
 
-  
   if (!loading && pendingSupervisors.length === 0) {
     return (
       <div className="w-full mt-10 flex flex-col items-center text-center text-gray-600 ">
@@ -103,13 +105,13 @@ const PendingSupervisorsList = () => {
                 key={sup.id}
                 className="border-b  border-gray-700 hover:bg-gray-200  transition"
               >
-                <td className="p-3">{sup.full_name}</td>
+                <td className="p-3">{sup.fullName}</td>
                 <td className="p-3">{sup.email}</td>
-                <td className="p-3">{sup.staff_id}</td>
+                <td className="p-3">{sup.staffId}</td>
                 <td className="p-3">
                   <button
-                    onClick={() => handleApprove(sup.id)}
-                    disabled={approving === sup.id}
+                    onClick={() => handleApprove(String(sup.id))}
+                    disabled={approving === String(sup.id)}
                     className="flex items-center cursor-pointer gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <CircleCheck size={16} /> Approve
@@ -159,8 +161,8 @@ const PendingSupervisorsList = () => {
             </div>
 
             <button
-              onClick={() => handleApprove(sup.id)}
-              disabled={approving === sup.id}
+              onClick={() => handleApprove(String(sup.id))}
+              disabled={approving === String(sup.id)}
               className="ml-8 flex items-center gap-1 w-full cursor-pointer justify-center bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <CircleCheck size={16} /> Approve

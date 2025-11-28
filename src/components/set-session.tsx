@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import api from "../lib/api";
 import { useSessionStore } from "../context/session-context";
 
-const CreateSession = ({ closeModal }) => {
+interface CreateSessionProps {
+  closeModal: () => void;
+}
+
+const CreateSession = ({ closeModal }: CreateSessionProps) => {
   const setSessionInStore = useSessionStore((state) => state.setSession);
   const [session, setSession] = useState("");
   const [duration, setDuration] = useState("");

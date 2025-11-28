@@ -11,7 +11,7 @@ export interface User {
 
 export interface Supervisor {
   id: number;
-  fullname: string;
+  fullName: string;
   email: string;
   staffId?: string;
 }

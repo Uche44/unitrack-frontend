@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { useForm } from "react-hook-form";
 import type { SubmitHandler, FieldErrors } from "react-hook-form";
@@ -82,7 +83,7 @@ const FormField: React.FC<FormFieldProps> = ({
         {isSelect ? (
           <select
             id={name as string}
-            {...register(name as string)}
+            {...register(name)}
             disabled={disabled}
             className={`
               w-full pl-10 pr-4 py-2 border rounded-lg bg-white text-gray-800 shadow-sm transition-all
@@ -105,7 +106,7 @@ const FormField: React.FC<FormFieldProps> = ({
             id={name as string}
             type={type}
             placeholder={placeholder}
-            {...register(name as string)}
+            {...register(name)}
             disabled={disabled}
             className={`
               w-full pl-10 pr-4 py-2 border rounded-lg bg-white text-gray-800 shadow-sm transition-all

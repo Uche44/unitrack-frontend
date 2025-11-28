@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api";
 import type { Student, Supervisor } from "../../../types/user";
+import { camelize } from "../../../types/camelize";
+import { useGuestMode } from "../../../hooks/useGuestMode";
+import GuestBanner from "../../../components/guest-banner";
 
 const AssignSupervisor: React.FC = () => {
   const [students, setStudents] = useState<Student[]>([]);
@@ -16,6 +20,7 @@ const AssignSupervisor: React.FC = () => {
   >(null);
   const [assignedCount, setAssignedCount] = useState<number>(0);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const { isGuest } = useGuestMode();
 
   useEffect(() => {
     fetchData();
@@ -29,8 +34,8 @@ const AssignSupervisor: React.FC = () => {
         api.get("/api/supervisors/"),
       ]);
 
-      setStudents(sRes.data || []);
-      setSupervisors(supRes.data || []);
+      setStudents(camelize(sRes.data) || []);
+      setSupervisors(camelize(supRes.data) || []);
     } catch (err: unknown) {
       console.error(err as Error);
       setError("Failed to load data. Please refresh.");
@@ -40,19 +45,22 @@ const AssignSupervisor: React.FC = () => {
   }
 
   function toggleStudent(id: number) {
+    if (isGuest) return; // Disable for guests
     setSelected((prev) => {
       if (prev.includes(id)) return prev.filter((x) => x !== id);
-      if (prev.length >= 5) return prev; // ignore additional selections
+      if (prev.length >= 5) return prev;
       return [...prev, id];
     });
   }
 
   function openModal() {
+    if (isGuest) return; // Disable for guests
     setModalOpen(true);
     setChosenSupervisor(null);
   }
 
   async function assign() {
+    if (isGuest) return; 
     if (!chosenSupervisor) return setError("Choose a supervisor first.");
     if (selected.length === 0) return setError("Choose students first.");
 
@@ -66,10 +74,10 @@ const AssignSupervisor: React.FC = () => {
       const supervisor = supervisors.find((sup) => sup.id === chosenSupervisor);
 
       // save success info
-      setAssignedSupervisorName(supervisor?.full_name || "Supervisor");
+      setAssignedSupervisorName(supervisor?.fullName || "Supervisor");
       setAssignedCount(selected.length);
       setSuccessMessage(
-        `${supervisor?.full_name} has been assigned to ${
+        `${supervisor?.fullName} has been assigned to ${
           selected.length
         } student${selected.length > 1 ? "s" : ""}.`
       );
@@ -91,6 +99,7 @@ const AssignSupervisor: React.FC = () => {
 
   return (
     <div className="p-4 md:p-8 max-w-6xl mx-auto">
+      <GuestBanner />
       <div className="flex items-center justify-between my-6 ">
         <h1 className="text-2xl font-bold text-green-700">
           Assign Supervisors
@@ -102,8 +111,12 @@ const AssignSupervisor: React.FC = () => {
           </div>
           <button
             onClick={openModal}
-            disabled={selected.length === 0}
-            className={`px-4 py-2 rounded-md text-white bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed`}
+            disabled={selected.length === 0 || isGuest}
+            className={`px-4 py-2 rounded-md text-white ${
+              isGuest
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed"
+            }`}
           >
             Choose Supervisor
           </button>
@@ -164,14 +177,14 @@ const AssignSupervisor: React.FC = () => {
                     <input
                       type="checkbox"
                       checked={selected.includes(s.id)}
-                      disabled={disabled}
+                      disabled={disabled || isGuest}
                       onChange={() => toggleStudent(s.id)}
                       className="h-4 w-4 text-green-600"
                     />
                   </td>
-                  <td className="p-3">{s.full_name}</td>
+                  <td className="p-3">{s.fullName}</td>
                   <td className="p-3">{s.email}</td>
-                  <td className="p-3">{s.matric_no || "-"}</td>
+                  <td className="p-3">{s.matricNo || "-"}</td>
                 </tr>
               );
             })}
@@ -215,7 +228,7 @@ const AssignSupervisor: React.FC = () => {
                     }`}
                   >
                     <div>
-                      <div className="font-medium">{sup.full_name}</div>
+                      <div className="font-medium">{sup.fullName}</div>
                       <div className="text-sm text-gray-500">{sup.email}</div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -223,6 +236,7 @@ const AssignSupervisor: React.FC = () => {
                         type="radio"
                         name="chosenSupervisor"
                         checked={chosenSupervisor === sup.id}
+                        disabled={isGuest}
                         onChange={() => setChosenSupervisor(sup.id)}
                         className="h-4 w-4 text-green-600"
                       />
@@ -241,8 +255,12 @@ const AssignSupervisor: React.FC = () => {
               </button>
               <button
                 onClick={assign}
-                disabled={!chosenSupervisor || loading}
-                className="px-4 py-2 rounded bg-green-600 text-white disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={!chosenSupervisor || loading || isGuest}
+                className={`px-4 py-2 rounded text-white ${
+                  isGuest
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed"
+                }`}
               >
                 {loading ? "Assigning..." : "Assign"}
               </button>
