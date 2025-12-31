@@ -4,7 +4,8 @@ import api from "../../../lib/api";
 import { useEffect, useState } from "react";
 import type { StudentResponse } from "../../../types/student-response";
 import { useSessionStore } from "../../../context/session-context";
-import GuestBanner from "../../../components/guest-banner";
+import CreateSubmissions from "../../../components/create-submissions";
+// import GuestBanner from "../../../components/guest-banner";
 
 const Students: React.FC = () => {
   const user = useUserStore((state) => state.user);
@@ -45,7 +46,7 @@ const Students: React.FC = () => {
 
   return (
     <section className="py-6 max-w-4xl mx-auto">
-      <GuestBanner />
+      {/* <GuestBanner /> */}
       <div className="w-full h-[5rem] items-center flex justify-between">
         <h1 className="text-3xl mt-6 font-bold mb-6 text-green-800">
           Welcome, {student?.full_name ?? user?.fullname ?? "Guest"}! 🎉
@@ -135,6 +136,9 @@ const Students: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* add submission */}
+      <CreateSubmissions />
     </section>
   );
 };

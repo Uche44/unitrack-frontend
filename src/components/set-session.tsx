@@ -30,7 +30,7 @@ const CreateSession = ({ closeModal }: CreateSessionProps) => {
     setSuccessMsg("");
 
     try {
-      const res = await api.post("/projects/session/", {
+      const res = await api.post("/api/projects/session/", {
         session,
         duration,
         start_date: startDate,

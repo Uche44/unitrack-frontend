@@ -8,8 +8,8 @@ import { Mail, Lock, ArrowRight, Info, CheckCircle } from "lucide-react";
 import api from "../lib/api";
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../context/user-context";
-import GuestRoleSelector from "../components/guest-role-selector";
-import { useState } from "react";
+// import GuestRoleSelector from "../components/guest-role-selector";
+// import { useState } from "react";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address."),
@@ -120,7 +120,8 @@ const LoginForm: React.FC = () => {
 
   const navigate = useNavigate();
   const setUser = useUserStore((state) => state.setUser);
-  const [showGuestSelector, setShowGuestSelector] = useState(false);
+  // const [showGuestSelector, setShowGuestSelector] = useState(false);
+
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
@@ -283,12 +284,12 @@ const LoginForm: React.FC = () => {
         </form>
 
         {/* Guest Login Button */}
-        <button
+        {/* <button
           onClick={() => setShowGuestSelector(true)}
           className="w-full mt-4 px-4 py-3 text-base font-semibold rounded-lg text-green-700 bg-green-50 border-2 border-green-600 hover:bg-green-100 transition-all"
         >
           Continue as Guest
-        </button>
+        </button> */}
 
         {/* Footer */}
         <footer className="mt-8 text-center text-xs text-gray-500 leading-relaxed">
@@ -301,14 +302,14 @@ const LoginForm: React.FC = () => {
       </div>
 
       {/* Guest Role Selector Modal */}
-      {showGuestSelector && (
+      {/* {showGuestSelector && (
         <div
           className="fixed inset-0 bg-black/30 flex items-center justify-center z-50 p-4"
           onClick={() => setShowGuestSelector(false)}
         >
           <GuestRoleSelector onClose={() => setShowGuestSelector(false)} />
         </div>
-      )}
+      )} */}
     </div>
   );
 };

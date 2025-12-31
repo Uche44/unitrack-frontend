@@ -60,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ role }) => {
       },
       {
         name: "My Project",
-        path: "/student/project",
+        path: "/student-dashboard/students/project",
         icon: <Folder size={20} />,
       },
       {

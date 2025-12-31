@@ -12,6 +12,9 @@ import SupervisorDashboardLayout from "./dashboard-layout/supervisor-layout";
 import AssignSupervisor from "./pages/dashboard/admin/assign-supervisor";
 import StudentPage from "./pages/dashboard/supervisor/student-page";
 import StudentDashboardLayout from "./dashboard-layout/student-layout";
+// import ProjectDash from "./pages/dashboard/student/projects";
+import ProjectDashboard from "./pages/dashboard/student/projects";
+import { Toaster } from "react-hot-toast";
 
 // import NotFound from "./components/NotFound";
 // import { Toaster } from "./components/ui/sonner";
@@ -85,6 +88,10 @@ const router = createBrowserRouter([
         index: true,
         element: <Students />,
       },
+      {
+        path: "students/project/",
+        element: <ProjectDashboard />,
+      },
       // {
       //   path: "assign-supervisors",
       //   element: <AssignSupervisor />,
@@ -96,7 +103,7 @@ const router = createBrowserRouter([
 const App: React.FC = () => {
   return (
     <>
-      {/* <Toaster /> */}
+      <Toaster position="top-right" />
       <RouterProvider router={router} />
     </>
   );

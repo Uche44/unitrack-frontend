@@ -9,6 +9,9 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    // Don't attempt refresh for the refresh endpoint itself
+    const requestUrl: string = (originalRequest && originalRequest.url) || "";
+    if (requestUrl.includes("/api/refresh/")) return Promise.reject(error);
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -24,7 +27,12 @@ api.interceptors.response.use(
           "Refresh token expired, redirecting to login...",
           refreshError
         );
-        window.location.href = "/auth/login";
+        // Avoid redirecting repeatedly if already on the login page
+        if (window.location.pathname !== "/auth/login") {
+          // Use replace to avoid creating extra history entries
+          window.location.replace("/auth/login");
+        }
+        return Promise.reject(refreshError);
       }
     }
     return Promise.reject(error);

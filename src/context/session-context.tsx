@@ -63,6 +63,9 @@ export const useSessionStore = create<SessionStore>((set) => {
   };
 
   void fetchSession();
+  // Do not auto-fetch session on module import — call `fetchSession` from
+  // components that need it to avoid triggering auth/refresh loops during
+  // redirects or on the login page.
 
   return store;
 });
