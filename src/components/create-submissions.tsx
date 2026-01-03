@@ -10,12 +10,13 @@ import { FileUpload } from "./file-upload";
 
 const CreateSubmissions: React.FC = () => {
   // const user = useUserStore((state) => state.user);
-  const { currentStage, projectId, setProjectId, advanceStage, buttonLabel } =
+  const { currentStage, projectId, setProjectId, setCurrentStage, advanceStage, buttonLabel } =
     useSubmissionStore();
 
   const [openProjectModal, setOpenProjectModal] = useState(false);
   const [openSubmissionModal, setOpenSubmissionModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [projectStatus, setProjectStatus] = useState<string | null>(null);
 
   const [projectData, setProjectData] = useState({
     title: "",
@@ -24,8 +25,29 @@ const CreateSubmissions: React.FC = () => {
 
   const [file, setFile] = useState<File | null>(null);
 
-  
+  // Fetch project status when projectId changes
+  React.useEffect(() => {
+    const fetchProjectStatus = async () => {
+      if (projectId) {
+        try {
+          const res = await api.get(`/api/projects/${projectId}/`);
+          const status = res.data.status;
+          setProjectStatus(status);
+          
+          // Sync stage with project status
+          if (status === 'proposal_approved' && currentStage === 'proposal') {
+            setCurrentStage('chapter_one');
+          }
+        } catch (err) {
+          console.error("Failed to fetch project status:", err);
+        }
+      }
+    };
+    
+    fetchProjectStatus();
+  }, [projectId, currentStage, setCurrentStage]);
 
+  
   const createProject = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -99,23 +121,36 @@ const CreateSubmissions: React.FC = () => {
     <>
       {/* ACTION BUTTON */}
       <section className="mt-10 flex flex-col items-end">
-        <button
-          onClick={() =>
-            currentStage === "proposal"
-              ? setOpenProjectModal(true)
-              : setOpenSubmissionModal(true)
-          }
-          className="py-3 px-4 bg-green-700 hover:bg-green-800 text-white rounded-lg font-semibold shadow flex gap-2"
-        >
-          <Plus />
-          {buttonLabel()}
-        </button>
+        {/* Show button only if proposal is not approved OR if we're past proposal stage */}
+        {(projectStatus !== 'proposal_approved' || currentStage !== 'proposal') && (
+          <>
+            <button
+              onClick={() =>
+                currentStage === "proposal"
+                  ? setOpenProjectModal(true)
+                  : setOpenSubmissionModal(true)
+              }
+              className="py-3 px-4 bg-green-700 hover:bg-green-800 text-white rounded-lg font-semibold shadow flex gap-2"
+            >
+              <Plus />
+              {buttonLabel()}
+            </button>
 
-        <p className="text-gray-600 mt-4">
-          {currentStage === "proposal"
-            ? "Start your project by submitting a proposal"
-            : `Submit your ${currentStage} to your supervisor`}
-        </p>
+            <p className="text-gray-600 mt-4">
+              {currentStage === "proposal"
+                ? "Start your project by submitting a proposal"
+                : `Submit your ${currentStage.replace('_', ' ')} to your supervisor`}
+            </p>
+          </>
+        )}
+        
+        {/* Show message when proposal is approved */}
+        {projectStatus === 'proposal_approved' && currentStage === 'chapter_one' && (
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+            <p className="text-green-800 font-semibold">✓ Your proposal has been approved!</p>
+            <p className="text-green-700 text-sm mt-1">You can now proceed to submit Chapter One.</p>
+          </div>
+        )}
       </section>
 
       {/* PROJECT MODAL */}

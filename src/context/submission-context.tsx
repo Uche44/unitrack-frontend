@@ -55,6 +55,7 @@ interface SubmissionState {
   currentStage: Milestone;
 
   setProjectId: (id: number) => void;
+  setCurrentStage: (stage: Milestone) => void;
   advanceStage: () => void;
   buttonLabel: () => string;
 }
@@ -64,6 +65,8 @@ export const useSubmissionStore = create<SubmissionState>((set, get) => ({
   currentStage: "proposal",
 
   setProjectId: (id) => set({ projectId: id }),
+
+  setCurrentStage: (stage) => set({ currentStage: stage }),
 
   advanceStage: () => {
     const order: Milestone[] = [
