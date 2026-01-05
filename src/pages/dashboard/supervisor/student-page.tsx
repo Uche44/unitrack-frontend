@@ -4,41 +4,10 @@ import api from "../../../lib/api";
 import { X, FileText } from "lucide-react";
 import { useUserStore } from "../../../context/user-context";
 import { Navigate } from "react-router-dom";
-import { Document, Page, pdfjs } from 'react-pdf';
-// import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-// import 'react-pdf/dist/esm/Page/TextLayer.css';
+import { Link } from "react-router-dom";
+import type { StudentResponse, ProjectDetail } from "../../../types/student";
+import toast from "react-hot-toast";
 
-
-export interface StudentResponse {
-  id: number;
-  fullName: string;
-  email: string;
-  matricNo: string;
-  supervisor: {
-    id: number;
-    fullName: string;
-  };
-}
-
-interface Submission {
-  id: number;
-  milestone: string;
-  file_url: string;
-  version: number;
-  submitted_at: string;
-  is_read: boolean;
-  comment?: string;
-  project: number;
-}
-
-interface ProjectDetail {
-  id: number;
-  title: string;
-  description: string;
-  status: string;
-  created_at: string;
-  submissions: Submission[];
-}
 
 const DetailRow = ({ label, value }: { label: string; value: string }) => (
   <span className="flex gap-2 w-full">
@@ -57,8 +26,8 @@ const StudentPage = () => {
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectionComment, setRejectionComment] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
-  const [numPages, setNumPages] = useState<number>(0);
-const [pageNumber, setPageNumber] = useState<number>(1);
+//   const [numPages, setNumPages] = useState<number>(0);
+// const [pageNumber, setPageNumber] = useState<number>(1);
   const user = useUserStore((state) => state.user);
 
   // Protect route - redirect if not supervisor
@@ -66,8 +35,7 @@ const [pageNumber, setPageNumber] = useState<number>(1);
     return <Navigate to="/auth/login" replace />;
   }
 
-  // Set up the worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+
 
   useEffect(() => {
     const loadData = async () => {
@@ -128,8 +96,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
       setProject(projectRes.data);
       setShowApproveModal(false);
       
-      // Show success message (you can use toast if available)
-      alert("Proposal approved successfully!");
+      // Show success toast
+      toast.success("Proposal approved successfully!");
     } catch (err: any) {
       console.error("Failed to approve proposal:", err);
       alert(err?.response?.data?.error || "Failed to approve proposal");
@@ -154,8 +122,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
       setShowRejectModal(false);
       setRejectionComment("");
       
-      // Show success message
-      alert("Proposal rejected");
+      // Show success toast
+      toast.success("Proposal rejected. Student can resubmit.");
     } catch (err: any) {
       console.error("Failed to reject proposal:", err);
       alert(err?.response?.data?.error || "Failed to reject proposal");
@@ -225,8 +193,19 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
                      
                   </div>
 
- {/* Approve/Reject Buttons - Only show for pending proposals */}
-                      {project.status === 'proposal_pending' && (
+ {/* Approve/Reject Buttons - Only show for pending proposals that are NOT rejected */}
+                      {(() => {
+                        // Get the latest proposal submission
+                        const latestProposal = project.submissions
+                          .filter(s => s.milestone === 'proposal')
+                          .sort((a, b) => b.version - a.version)[0];
+                        
+                        // Only show buttons if project is pending AND latest proposal is not rejected
+                        const showButtons = project.status === 'proposal_pending' && 
+                                          latestProposal && 
+                                          !latestProposal.is_rejected;
+                        
+                        return showButtons ? (
                           <div className="mt-4 flex gap-3">
                               <button
                                   onClick={() => setShowApproveModal(true)}
@@ -241,42 +220,160 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
                                   ✗ Reject Proposal
                               </button>
                           </div>
-                      )}
+                        ) : latestProposal?.is_rejected ? (
+                          <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                            <p className="text-red-700 text-sm font-medium">
+                              ✗ This proposal has been rejected. Waiting for student to resubmit.
+                            </p>
+                          </div>
+                        ) : null;
+                      })()}
 
                 </div>
 
-                <div className="border-t pt-4">
-                    <h4 className="font-semibold text-lg mb-3">Submissions</h4>
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {project.submissions && project.submissions.length > 0 ? (
-                            project.submissions.map((submission) => (
-                                <div key={submission.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow bg-gray-50">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <span className="font-bold text-gray-700 capitalize block">
-                                                {submission.milestone.replace('_', ' ')}
-                                            </span>
-                                            <span className="text-xs text-gray-500">
-                                                Version {submission.version}
-                                            </span>
+                {/* Submissions Section - Reorganized */}
+                <div className="border-t pt-4 space-y-6">
+                    {(() => {
+                        // Separate submissions by milestone
+                        const proposalSubmissions = project.submissions
+                            .filter(s => s.milestone === 'proposal')
+                            .sort((a, b) => b.version - a.version); // Latest first
+                        
+                        const otherSubmissions = project.submissions
+                            .filter(s => s.milestone !== 'proposal')
+                            .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime());
+                        
+                        const latestProposal = proposalSubmissions[0];
+                        const previousProposals = proposalSubmissions.slice(1);
+
+                        return (
+                            <>
+                                {/* Latest Proposal Submission */}
+                                {latestProposal && (
+                                    <div>
+                                        <h4 className="font-semibold text-lg mb-3 flex items-center gap-2">
+                                            {/* Latest Proposal Submission */}
+                                            Proposal Document
+                                            {latestProposal.is_approved && (
+                                                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">✓ Approved</span>
+                                            )}
+                                            {latestProposal.is_rejected && (
+                                                <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">✗ Rejected</span>
+                                            )}
+                                        </h4>
+                                        <div className={`border-2 rounded-lg p-4 ${
+                                            latestProposal.is_approved ? 'border-green-300 bg-green-50' :
+                                            latestProposal.is_rejected ? 'border-red-300 bg-red-50' :
+                                            'border-blue-300 bg-blue-50'
+                                        }`}>
+                                            <div className="flex justify-between items-start mb-3">
+                                                <div>
+                                                    <span className="font-bold text-gray-800 block">
+                                                        Proposal (Version {latestProposal.version})
+                                                    </span>
+                                                    <span className="text-sm text-gray-500">
+                                                        Submitted: {new Date(latestProposal.submitted_at).toLocaleString()}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            {latestProposal.is_rejected && latestProposal.rejection_comment && (
+                                                <div className="mb-3 p-3 bg-white border border-red-200 rounded">
+                                                    <p className="text-sm font-medium text-red-800 mb-1">Your Feedback:</p>
+                                                    <p className="text-sm text-red-700 italic">"{latestProposal.rejection_comment}"</p>
+                                                </div>
+                                            )}
+                                            
+                                            <button
+                                                onClick={() => setPreviewUrl(latestProposal.file_url)}
+                                                className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors text-sm font-medium"
+                                            >
+                                                View Document
+                                            </button>
                                         </div>
-                                         <span className="text-xs text-gray-400">
-                                            {new Date(submission.submitted_at).toLocaleDateString()}
-                                        </span>
                                     </div>
-                                    
-                                    <button
-                                        onClick={() => setPreviewUrl(submission.file_url)}
-                                        className="w-full mt-2 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors text-sm font-medium"
-                                    >
-                                        View Document
-                                    </button>
-                                </div>
-                            ))
-                        ) : (
-                            <p className="text-gray-500 italic col-span-full">No submissions yet.</p>
-                        )}
-                    </div>
+                                )}
+
+                                {/* Previous Proposal Submissions (History) */}
+                                {previousProposals.length > 0 && (
+                                    <div>
+                                        <h4 className="font-semibold text-lg mb-3 text-gray-600">
+                                            Previous Proposal Submissions (History)
+                                        </h4>
+                                        <div className="space-y-3">
+                                            {previousProposals.map((submission) => (
+                                                <div key={submission.id} className="border rounded-lg p-3 bg-gray-50 opacity-75">
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <div>
+                                                            <span className="font-semibold text-gray-600 text-sm block">
+                                                                Proposal (Version {submission.version})
+                                                            </span>
+                                                            <span className="text-xs text-gray-400">
+                                                                {new Date(submission.submitted_at).toLocaleString()}
+                                                            </span>
+                                                            {submission.is_rejected && (
+                                                                <span className="ml-2 text-xs text-red-600 font-medium">✗ Rejected</span>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {submission.is_rejected && submission.rejection_comment && (
+                                                        <div className="mb-2 p-2 bg-white border border-red-100 rounded text-xs">
+                                                            <p className="text-red-600 italic">"{submission.rejection_comment}"</p>
+                                                        </div>
+                                                    )}
+                                                    
+                                                    <button
+                                                        onClick={() => setPreviewUrl(submission.file_url)}
+                                                        className="w-full mt-2 bg-gray-600 text-white py-1.5 rounded hover:bg-gray-700 transition-colors text-xs"
+                                                    >
+                                                        View Document
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Other Milestone Submissions */}
+                                {otherSubmissions.length > 0 && (
+                                    <div>
+                                        <h4 className="font-semibold text-lg mb-3">Other Submissions</h4>
+                                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                            {otherSubmissions.map((submission) => (
+                                                <div key={submission.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow bg-gray-50">
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <div>
+                                                            <span className="font-bold text-gray-700 capitalize block">
+                                                                {submission.milestone.replace('_', ' ')}
+                                                            </span>
+                                                            <span className="text-xs text-gray-500">
+                                                                Version {submission.version}
+                                                            </span>
+                                                        </div>
+                                                        <span className="text-xs text-gray-400">
+                                                            {new Date(submission.submitted_at).toLocaleDateString()}
+                                                        </span>
+                                                    </div>
+                                                    
+                                                    <button
+                                                        onClick={() => setPreviewUrl(submission.file_url)}
+                                                        className="w-full mt-2 bg-green-600 text-white py-2 rounded hover:bg-green-700 transition-colors text-sm font-medium"
+                                                    >
+                                                        View Document
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {project.submissions.length === 0 && (
+                                    <p className="text-gray-500 italic text-sm">No submissions yet.</p>
+                                )}
+                            </>
+                        );
+                    })()}
                 </div>
             </div>
         ) : (
@@ -294,7 +391,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
   <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
     <div className="bg-white rounded-lg w-full h-[90vh] max-w-6xl flex flex-col shadow-2xl">
       <div className="flex justify-between items-center p-4 border-b">
-        <h3 className="font-bold text-lg">Document Preview</h3>
+        <h3 className="font-bold text-lg">{student.fullName}'s project proposal</h3>
         <button
           onClick={() => setPreviewUrl(null)}
           className="p-1 hover:bg-gray-100 rounded-full transition-colors"
@@ -304,73 +401,35 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
         </button>
       </div>
       
-      <div className="flex-1 bg-gray-100 p-4 overflow-auto">
-        <Document
-          file={previewUrl}
-          onLoadSuccess={({ numPages }) => setNumPages(numPages)}
-          className="flex flex-col items-center gap-4"
-        >
-          {Array.from(new Array(numPages), (el, index) => (
-            <Page
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-              className="shadow-lg"
-              width={800}
-            />
-          ))}
-        </Document>
+      <div className="flex-1 bg-gray-100 p-2 overflow-auto">
+        {/* Convert Cloudinary PDF to images */}
+        <div className="flex flex-col items-center gap-4 p-4">
+          {/* This will show the first page as an image */}
+          <img 
+            src={previewUrl.replace('/upload/', '/upload/pg_1,f_jpg/')} 
+            alt="PDF Page 1"
+            className="shadow-lg max-w-full"
+          />
+          {/* You can add more pages by changing pg_1 to pg_2, pg_3, etc. */}
+        </div>
       </div>
       
-      <div className="p-3 border-t bg-gray-50 flex justify-between items-center">
-        <span className="text-sm text-gray-600">
-          {numPages > 0 && `${numPages} pages`}
-        </span>
-        <a 
-          href={previewUrl} 
+      <div className="p-3 border-t bg-gray-50 flex justify-end">
+        <Link 
+          to='/feedback-page' 
           target="_blank" 
           rel="noopener noreferrer"
+          download
           className="text-blue-600 hover:underline text-sm font-medium"
         >
-          Open in new tab
-        </a>
+          MAKE CORRECTIONS
+        </Link>
       </div>
     </div>
   </div>
 )}
 
-      {/* {previewUrl && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg w-full h-[90vh] max-w-6xl flex flex-col shadow-2xl animate-in fade-in duration-200">
-            <div className="flex justify-between items-center p-4 border-b">
-              <h3 className="font-bold text-lg">Document Preview</h3>
-              <button
-                onClick={() => setPreviewUrl(null)}
-                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
-                aria-label="Close preview"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-            <div className="flex-1 bg-gray-100 p-2 overflow-hidden relative">
-              <iframe
-                src={previewUrl}
-                className="w-full h-full border-none bg-white rounded-sm shadow-inner"
-                title="Document Preview"
-              />
-            </div>
-            <div className="p-3 border-t bg-gray-50 flex justify-end">
-                 <a 
-                    href={previewUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline text-sm font-medium"
-                 >
-                    Open in new tab
-                 </a>
-            </div>
-          </div>
-        </div>
-      )} */}
+   
 
       {/* Approve Confirmation Modal */}
       {showApproveModal && (

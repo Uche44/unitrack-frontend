@@ -25,7 +25,7 @@ const CreateSubmissions: React.FC = () => {
 
   const [file, setFile] = useState<File | null>(null);
 
-  // Fetch project status when projectId changes
+  // Fetch project status on mount and when projectId changes
   React.useEffect(() => {
     const fetchProjectStatus = async () => {
       if (projectId) {
@@ -45,7 +45,7 @@ const CreateSubmissions: React.FC = () => {
     };
     
     fetchProjectStatus();
-  }, [projectId, currentStage, setCurrentStage]);
+  }, [projectId, setCurrentStage, currentStage]);
 
   
   const createProject = async (e: React.FormEvent) => {

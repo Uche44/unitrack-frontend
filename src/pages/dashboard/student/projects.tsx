@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import api from "../../../lib/api";
 import { X } from "lucide-react";
-
-interface Submission {
-  id: number;
-  milestone: string;
-  file_url: string;
-  version: number;
-  submitted_at: string;
-  is_read: boolean;
-  is_approved: boolean;
-  is_rejected: boolean;
-  rejection_comment?: string;
-  comment?: string;
-  project: number;
-}
+import type { Submission } from "../../../types/student";
+// interface Submission {
+//   id: number;
+//   milestone: string;
+//   file_url: string;
+//   version: number;
+//   submitted_at: string;
+//   is_read: boolean;
+//   is_approved: boolean;
+//   is_rejected: boolean;
+//   rejection_comment?: string;
+//   comment?: string;
+//   project: number;
+// }
 
 interface Project {
   id: number;

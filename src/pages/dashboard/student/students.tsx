@@ -2,7 +2,7 @@ import React from "react";
 import { useUserStore } from "../../../context/user-context";
 import api from "../../../lib/api";
 import { useEffect, useState } from "react";
-import type { StudentResponse } from "../../../types/student-response";
+import type { StudentResponse } from "../../../types/student";
 import { useSessionStore } from "../../../context/session-context";
 import CreateSubmissions from "../../../components/create-submissions";
 // import GuestBanner from "../../../components/guest-banner";
