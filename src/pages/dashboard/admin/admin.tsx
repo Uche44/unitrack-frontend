@@ -41,8 +41,10 @@ const Admin: React.FC = () => {
   return (
     <section className=" p-1  w-full min-h-screen">
       <GuestBanner />
-      <div className="w-full h-20 mt-9 p-4 flex items-center justify-between">
-        <h1 className=" text-3xl font-bold text-green-700">Welcome Admin!</h1>
+      <div className="w-full mt-9 p-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <h1 className="text-2xl md:text-3xl font-bold text-green-700">
+          Welcome Admin!
+        </h1>
         {currentSession ? (
           <div className="bg-green-50 border-2 border-green-400 rounded-xl p-4 max-w-md">
             {/* <p className="text-sm font-semibold text-green-700 mb-2">

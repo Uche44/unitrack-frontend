@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { GraduationCap } from "lucide-react";
+import { Link } from "react-router-dom";
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -62,7 +63,7 @@ const Header: React.FC = () => {
           ))}
 
           <button className="ml-4 cursor-pointer bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-medium shadow-md transition-transform hover:scale-105">
-            Get Started
+            <Link to="/auth/login">Login</Link>
           </button>
         </nav>
 
@@ -98,7 +99,7 @@ const Header: React.FC = () => {
               </button>
             ))}
             <button className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-medium shadow-md">
-              Get Started
+              <Link to="/auth/login">Login</Link>
             </button>
           </nav>
         </div>

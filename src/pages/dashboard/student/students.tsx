@@ -48,8 +48,8 @@ const Students: React.FC = () => {
   return (
     <section className="py-6 max-w-4xl mx-auto">
       {/* <GuestBanner /> */}
-      <div className="w-full h-[5rem] items-center flex justify-between">
-        <h1 className="text-3xl mt-6 font-bold mb-6 text-green-800">
+      <div className="w-full items-center flex flex-col gap-2 md:flex-row md:justify-between mt-4 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-green-800">
           Welcome, {student?.fullName ?? user?.fullname ?? "Guest"}! 🎉
         </h1>
         <div className="space-y-1 text-sm text-green-700">

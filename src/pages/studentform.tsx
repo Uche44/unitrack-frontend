@@ -14,6 +14,7 @@ import {
   Info,
   CheckCircle,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import api from "../lib/api";
 
 // Zod Schema
@@ -23,7 +24,7 @@ const studentSchema = z.object({
     .string()
     .regex(
       /^\d{4}\/\d{6}$/,
-      "Matric number must follow the format 2021/297854."
+      "Matric number must follow the format 2021/297854.",
     ),
   email: z.string().email("Invalid email address."),
   department: z.literal("Computer Science"),
@@ -144,7 +145,6 @@ const StudentForm: React.FC = () => {
         password: data.password,
       };
 
-  
       const res = await api.post("/api/signup/", payload);
 
       if (res.status === 201) {
@@ -289,12 +289,11 @@ const StudentForm: React.FC = () => {
 
         {/* Footer */}
         <footer className="mt-8 text-center text-xs text-gray-500 leading-relaxed">
-          Alumni registrations are handled by the system administrator. Please
-          contact{" "}
+          Already have an account?{" "}
           <span className="text-green-600 font-medium">
-            support@unitrack.com
+            <Link to="/auth/login">Login</Link>
           </span>{" "}
-          for assistance.
+          
         </footer>
       </div>
     </div>

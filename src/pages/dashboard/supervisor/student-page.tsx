@@ -156,7 +156,7 @@ const StudentPage = () => {
         <h2 className="text-3xl font-bold mb-4 border-b pb-2">
           Student Details
         </h2>
-        <div className="flex justify-between items-end">
+        <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-end">
           <div className="space-y-2">
             {details.map((item, i) => (
               <DetailRow

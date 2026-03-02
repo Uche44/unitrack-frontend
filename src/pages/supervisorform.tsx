@@ -15,6 +15,7 @@ import {
   // Phone,
   Briefcase,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import api from "../lib/api";
 
 const supervisorSchema = z.object({
@@ -187,7 +188,6 @@ const SupervisorForm: React.FC = () => {
           <p className="text-gray-500">
             Register as a Supervisor to oversee and manage projects.
           </p>
-         
         </header>
 
         {/* Success message */}
@@ -208,7 +208,6 @@ const SupervisorForm: React.FC = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-4"
         >
-        
           <FormField
             label="Full Name"
             name="fullName"
@@ -218,7 +217,6 @@ const SupervisorForm: React.FC = () => {
             error={errors}
           />
 
-          
           <FormField
             label="Staff ID"
             name="staffId"
@@ -228,7 +226,6 @@ const SupervisorForm: React.FC = () => {
             error={errors}
           />
 
-     
           <FormField
             label="Email"
             name="email"
@@ -250,7 +247,6 @@ const SupervisorForm: React.FC = () => {
             error={errors}
           /> */}
 
-         
           <FormField
             label="Password"
             name="password"
@@ -261,7 +257,6 @@ const SupervisorForm: React.FC = () => {
             error={errors}
           />
 
-         
           <FormField
             label="Department"
             name="department"
@@ -273,7 +268,6 @@ const SupervisorForm: React.FC = () => {
             disabled
           />
 
-    
           <input
             type="hidden"
             {...register("role")}
@@ -321,13 +315,11 @@ const SupervisorForm: React.FC = () => {
           </button>
         </form>
 
-       
         <footer className="mt-8 text-center text-xs text-gray-500 leading-relaxed">
-          Need an account for administration? Please contact{" "}
+          Already have an account?{" "}
           <span className="text-green-600 font-medium">
-            support@unitrack.com
+            <Link to="/auth/login">Login</Link>
           </span>{" "}
-          for assistance.
         </footer>
       </div>
     </div>
