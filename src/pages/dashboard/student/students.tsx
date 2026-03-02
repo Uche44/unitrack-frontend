@@ -3,6 +3,7 @@ import { useUserStore } from "../../../context/user-context";
 import api from "../../../lib/api";
 import { useEffect, useState } from "react";
 import type { StudentResponse } from "../../../types/student";
+import { camelize } from "../../../types/camelize";
 import { useSessionStore } from "../../../context/session-context";
 import CreateSubmissions from "../../../components/create-submissions";
 // import GuestBanner from "../../../components/guest-banner";
@@ -19,7 +20,7 @@ const Students: React.FC = () => {
     const fetchStudentDetails = async () => {
       try {
         const res = await api.get(`/api/students/${student_id}/`);
-        setStudent(res.data);
+        setStudent(camelize(res.data));
       } catch (error) {
         console.error("Failed to fetch student:", error);
       } finally {
@@ -49,7 +50,7 @@ const Students: React.FC = () => {
       {/* <GuestBanner /> */}
       <div className="w-full h-[5rem] items-center flex justify-between">
         <h1 className="text-3xl mt-6 font-bold mb-6 text-green-800">
-          Welcome, {student?.full_name ?? user?.fullname ?? "Guest"}! 🎉
+          Welcome, {student?.fullName ?? user?.fullname ?? "Guest"}! 🎉
         </h1>
         <div className="space-y-1 text-sm text-green-700">
           <p>
@@ -69,11 +70,11 @@ const Students: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-700">
             <p>
               <span className="font-semibold">Full Name:</span>{" "}
-              {student.full_name}
+              {student.fullName}
             </p>
             <p>
               <span className="font-semibold">Matric No:</span>{" "}
-              {student.matric_no}
+              {student.matricNo}
             </p>
             <p>
               <span className="font-semibold">Email:</span> {student.email}
@@ -87,7 +88,7 @@ const Students: React.FC = () => {
             </p>
             <p>
               <span className="font-semibold">Joined:</span>{" "}
-              {new Date(student.created_at).toLocaleDateString()}
+              {new Date(student.createdAt).toLocaleDateString()}
             </p>
           </div>
         </div>
@@ -101,7 +102,7 @@ const Students: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-800">
             <p>
               <span className="font-semibold">Full Name:</span>{" "}
-              {student?.supervisor?.full_name ?? "No supervisor assigned"}
+              {student?.supervisor?.fullName ?? "No supervisor assigned"}
             </p>
             <p>
               <span className="font-semibold">Email:</span>{" "}
@@ -109,11 +110,11 @@ const Students: React.FC = () => {
             </p>
             <p>
               <span className="font-semibold">Staff ID:</span>{" "}
-              {student?.supervisor?.staff_id ?? "-"}
+              {student?.supervisor?.staffId ?? "-"}
             </p>
             <p>
               <span className="font-semibold">Status:</span>{" "}
-              {student?.supervisor?.is_approved ? (
+              {student?.supervisor?.isApproved ? (
                 <span className="text-green-600 font-semibold">Approved ✔</span>
               ) : (
                 <span className="text-red-500 font-semibold">
@@ -121,18 +122,6 @@ const Students: React.FC = () => {
                 </span>
               )}
             </p>
-            {/* <p>
-              <span className="font-semibold">Booking Status:</span>{" "}
-              {student.supervisor.is_fully_booked ? (
-                <span className="text-red-500 font-semibold">
-                  Fully Booked ❌
-                </span>
-              ) : (
-                <span className="text-green-600 font-semibold">
-                  Available ✔
-                </span>
-              )}
-            </p> */}
           </div>
         </div>
       </div>

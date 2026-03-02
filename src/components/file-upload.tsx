@@ -1,12 +1,16 @@
 import { FileText, X } from "lucide-react";
 
+interface FileUploadProps {
+  file?: File | null;
+  onFileSelect: (file: File | null) => void;
+  label?: string;
+}
+
 export const FileUpload = ({
   file,
-  setFile,
-}: {
-  file: File | null;
-  setFile: (file: File | null) => void;
-}) => {
+  onFileSelect,
+  label = "Click to upload proposal",
+}: FileUploadProps) => {
   return (
     <div className="border-2 border-dashed border-green-500 rounded-lg p-4 text-center">
       {!file ? (
@@ -15,13 +19,13 @@ export const FileUpload = ({
             type="file"
             id="fileInput"
             className="hidden"
-            onChange={(e) => setFile(e.target.files?.[0] || null)}
+            onChange={(e) => onFileSelect(e.target.files?.[0] || null)}
           />
           <label
             htmlFor="fileInput"
             className="cursor-pointer text-green-700 font-semibold"
           >
-            Click to upload proposal
+            {label}
           </label>
         </>
       ) : (
@@ -38,7 +42,7 @@ export const FileUpload = ({
 
           <button
             type="button"
-            onClick={() => setFile(null)}
+            onClick={() => onFileSelect(null)}
             className="text-red-500 hover:text-red-700"
           >
             <X />

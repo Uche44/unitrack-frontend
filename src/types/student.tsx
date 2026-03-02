@@ -1,31 +1,31 @@
 export interface StudentResponse {
   id: number;
-  full_name: string;
+  fullName: string;
   email: string;
-  matric_no: string;
+  matricNo: string;
   department: string;
   role: string;
-  created_at: string;
+  createdAt: string;
   supervisor: {
     id: number;
-    full_name: string;
+    fullName: string;
     email?: string;
-    staff_id?: string;
-    is_approved?: boolean;
-    is_fully_booked?: boolean;
+    staffId?: string;
+    isApproved?: boolean;
+    isFullyBooked?: boolean;
   };
 }
 
 export interface Submission {
   id: number;
   milestone: string;
-  file_url: string;
+  fileUrl: string;
   version: number;
-  submitted_at: string;
-  is_read?: boolean;
-  is_approved?: boolean;
-  is_rejected?: boolean;
-  rejection_comment?: string;
+  submittedAt: string;
+  isRead?: boolean;
+  isApproved?: boolean;
+  isRejected?: boolean;
+  rejectionComment?: string;
   comment?: string;
   project: number;
 }
@@ -35,6 +35,6 @@ export interface ProjectDetail {
   title: string;
   description: string;
   status: string;
-  created_at: string;
+  createdAt: string;
   submissions: Submission[];
 }

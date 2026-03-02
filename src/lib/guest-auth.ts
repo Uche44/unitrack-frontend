@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import api from "./api";
 
 export interface GuestLoginResponse {
@@ -22,5 +23,6 @@ export const guestLogin = async (
     return response.data;
   } catch (error) {
     throw new Error("Failed to login as guest");
+  
   }
 };
